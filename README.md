@@ -64,19 +64,7 @@ Fill in `.env.local`:
 npm run db:setup
 ```
 
-### 5. (Optional) Migrate your existing Supabase data
-
-If your old Supabase project still has data, pull it into Neon. Make sure the
-Supabase project is **resumed** first, then run:
-
-```bash
-npm run db:migrate-supabase
-```
-
-Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` in `.env.local` first (the script
-reads them from the environment — no credentials are stored in the code).
-
-### 6. Run
+### 5. Run
 
 ```bash
 npm run dev
@@ -126,7 +114,7 @@ lib/
   auth.ts             PIN check + signed session cookie
   types.ts            shared types
 schema.sql            table definitions
-scripts/              db setup, Supabase migration, PIN hashing
+scripts/              db setup + PIN hashing
 legacy/index.html     the original single-file app (reference only)
 ```
 
@@ -139,7 +127,6 @@ legacy/index.html     the original single-file app (reference only)
 | `npm run dev` | Start the dev server |
 | `npm run build` / `npm start` | Production build / serve |
 | `npm run db:setup` | Create the database tables |
-| `npm run db:migrate-supabase` | Copy data from the old Supabase project |
 | `npm run pin:hash -- <pin>` | Print the `EDIT_PIN_HASH` for a PIN |
 
 ---

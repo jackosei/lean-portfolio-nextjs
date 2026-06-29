@@ -9,7 +9,6 @@
     "start": "next start",
     "lint": "next lint",
     "db:setup": "node scripts/setup-db.mjs",
-    "db:migrate-supabase": "node scripts/migrate-from-supabase.mjs",
     "pin:hash": "node scripts/hash-pin.mjs"
   },
   "dependencies": {
