@@ -26,9 +26,17 @@ const statements = schema
 
 const sql = neon(connectionString);
 
+// The Neon HTTP driver only accepts tagged-template calls. Wrap a plain SQL
+// string in a minimal TemplateStringsArray (no interpolated values) so DDL
+// statements from schema.sql can run unchanged.
+function runRaw(statement) {
+  const strings = Object.assign([statement], { raw: [statement] });
+  return sql(strings);
+}
+
 try {
   for (const statement of statements) {
-    await sql.query(statement);
+    await runRaw(statement);
   }
   console.log(`✓ Schema applied (${statements.length} statements).`);
 } catch (err) {
