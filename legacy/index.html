@@ -1,0 +1,1683 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jack Osei | Portfolio</title>
+  <link rel="icon" href="/favicon.ico" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── DARK THEME (default) ── */
+    :root,
+    [data-theme="dark"] {
+      --bg: #07090f;
+      --surface: #0f1219;
+      --border: rgba(255, 255, 255, 0.07);
+      --border-hover: rgba(255, 255, 255, 0.15);
+      --text: #e8e4dc;
+      --muted: #6b6f7a;
+      --faint: #1a1d26;
+      --toggle-icon: "☀";
+    }
+
+    /* ── LIGHT THEME ── */
+    [data-theme="light"] {
+      --bg: #f5f2ec;
+      --surface: #ffffff;
+      --border: rgba(0, 0, 0, 0.09);
+      --border-hover: rgba(0, 0, 0, 0.2);
+      --text: #1c1c1e;
+      --muted: #8a8a96;
+      --faint: #ede9e2;
+      --toggle-icon: "☾";
+    }
+
+    /* Accent colors stay consistent across themes */
+    :root {
+      --web-accent: #c9a96e;
+      --web-glow: rgba(201, 169, 110, 0.25);
+      --wp-accent: #6ec9b8;
+      --wp-glow: rgba(110, 201, 184, 0.25);
+      --ui-accent: #c96e9a;
+      --ui-glow: rgba(201, 110, 154, 0.25);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.6;
+      min-height: 100vh;
+      transition:
+        background 0.3s,
+        color 0.3s;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 50;
+    }
+
+    .edit-badge {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: 2px;
+      border: 1px solid var(--web-accent);
+      color: var(--web-accent);
+      display: none;
+    }
+
+    .edit-badge.visible {
+      display: block;
+    }
+
+    /* ── HEADER ── */
+    header {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 32px 64px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .main-nav .intro {
+      /* font-family: 'Cormorant Garamond', serif; */
+      font-size: 12px;
+      text-transform: uppercase;
+      /* font-style: italic; */
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      display: inline-block;
+      width: max-content;
+    }
+
+    .main-nav .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .main-nav .btn {
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border: 1px solid var(--web-accent);
+      border-radius: 2px;
+      color: var(--web-accent);
+      text-decoration: none;
+      background: transparent;
+      cursor: pointer;
+      font-family: "JetBrains Mono", monospace;
+      transition: all 0.2s;
+    }
+
+    .main-nav .btn:hover {
+      background-color: var(--web-accent);
+      color: var(--surface);
+    }
+
+    .main-nav .btn.btn-primary {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    .main-nav .btn.btn-primary:hover {
+      background: var(--text);
+      color: var(--bg);
+      opacity: 0.82;
+    }
+
+    .theme-toggle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .main-nav .theme-toggle:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    h1 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(42px, 7vw, 80px);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-top: 16px;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    .bio {
+      max-width: 480px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+
+    .bio:hover {
+      color: var(--text);
+    }
+
+    .nav-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .nav-pills a {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-pills a:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    .nav-pills a.web:hover {
+      color: var(--web-accent);
+      border-color: var(--web-accent);
+    }
+
+    .nav-pills a.wp:hover {
+      color: var(--wp-accent);
+      border-color: var(--wp-accent);
+    }
+
+    .nav-pills a.ui:hover {
+      color: var(--ui-accent);
+      border-color: var(--ui-accent);
+    }
+
+    .nav-pills a.active {
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    .nav-pills a.web.active {
+      color: var(--web-accent);
+      border-color: var(--web-accent);
+    }
+
+    .nav-pills a.wp.active {
+      color: var(--wp-accent);
+      border-color: var(--wp-accent);
+    }
+
+    .nav-pills a.ui.active {
+      color: var(--ui-accent);
+      border-color: var(--ui-accent);
+    }
+
+    /* ── STICKY NAV ── */
+    .sticky-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 32px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      transform: translateY(-100%);
+      transition: transform 0.25s, background 0.3s, border-color 0.3s;
+    }
+
+    .sticky-nav.visible {
+      transform: translateY(0);
+    }
+
+    .sticky-nav a {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .sticky-nav a:hover { color: var(--text); border-color: var(--border-hover); }
+    .sticky-nav a.web.active { color: var(--web-accent); border-color: var(--web-accent); }
+    .sticky-nav a.wp.active  { color: var(--wp-accent);  border-color: var(--wp-accent); }
+    .sticky-nav a.ui.active  { color: var(--ui-accent);  border-color: var(--ui-accent); }
+
+    /* ── CONTACT MODAL ── */
+    .contact-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .contact-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--faint);
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      font-family: "JetBrains Mono", monospace;
+      text-align: left;
+      width: 100%;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .contact-option:hover {
+      border-color: var(--border-hover);
+      background: var(--surface);
+    }
+
+    .contact-icon {
+      font-size: 18px;
+      width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .contact-label {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .contact-value {
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .contact-hint {
+      font-size: 10px;
+      color: var(--muted);
+      margin-left: auto;
+      flex-shrink: 0;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 32px 120px;
+    }
+
+    .section {
+      padding: 64px 0 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    .section-count {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .web .section-label {
+      color: var(--web-accent);
+    }
+
+    .wp .section-label {
+      color: var(--wp-accent);
+    }
+
+    .ui .section-label {
+      color: var(--ui-accent);
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition:
+        border-color 0.25s,
+        transform 0.25s,
+        box-shadow 0.25s;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    [data-theme="light"] .card:hover {
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .web .card:hover {
+      border-color: var(--web-glow);
+    }
+
+    .wp .card:hover {
+      border-color: var(--wp-glow);
+    }
+
+    .ui .card:hover {
+      border-color: var(--ui-glow);
+    }
+
+    .card-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--faint);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .card-thumb img.loaded {
+      opacity: 1;
+    }
+
+    .thumb-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+    }
+
+    .thumb-placeholder svg {
+      opacity: 0.3;
+    }
+
+    .card-body {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .card-name {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 17px;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .card-desc {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-url {
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0.5;
+    }
+
+    .card-arrow {
+      font-size: 11px;
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: all 0.2s;
+      align-self: flex-end;
+    }
+
+    .web .card:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+      color: var(--web-accent);
+    }
+
+    .wp .card:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+      color: var(--wp-accent);
+    }
+
+    .ui .card:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+      color: var(--ui-accent);
+    }
+
+    /* ── CARD ACTION BUTTONS (edit mode only) ── */
+    .card-delete,
+    .card-edit {
+      position: absolute;
+      top: 7px;
+      width: 26px;
+      height: 26px;
+      background: rgba(10, 10, 14, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      color: #e8e4dc;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      z-index: 5;
+    }
+
+    .card-delete {
+      right: 7px;
+    }
+
+    .card-edit {
+      right: 39px;
+      font-size: 12px;
+    }
+
+    [data-theme="light"] .card-delete,
+    [data-theme="light"] .card-edit {
+      background: rgba(255, 255, 255, 0.88);
+      color: #1c1c1e;
+      border-color: rgba(0, 0, 0, 0.18);
+    }
+
+    .card-delete:hover {
+      background: #c96e9a;
+      border-color: #c96e9a;
+      color: #fff;
+    }
+
+    .card-edit:hover {
+      background: var(--web-accent);
+      border-color: var(--web-accent);
+      color: #fff;
+    }
+
+    body.edit-mode .card-delete,
+    body.edit-mode .card-edit {
+      display: flex;
+    }
+
+    /* ── DRAG TO REORDER (edit mode only) ── */
+    body.edit-mode .card {
+      cursor: grab;
+    }
+
+    body.edit-mode .card:active {
+      cursor: grabbing;
+    }
+
+    .card.dragging {
+      opacity: 0.4;
+    }
+
+    .card.drag-over {
+      outline: 2px dashed var(--web-accent);
+      outline-offset: 2px;
+    }
+
+    /* ── EXIT EDIT BUTTON ── */
+    .exit-edit {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 2px;
+      border: 1px solid var(--ui-accent);
+      color: var(--ui-accent);
+      background: transparent;
+      cursor: pointer;
+      font-family: "JetBrains Mono", monospace;
+      display: none;
+      transition: all 0.2s;
+    }
+
+    .exit-edit:hover {
+      background: var(--ui-accent);
+      color: var(--surface);
+    }
+
+    body.edit-mode .exit-edit {
+      display: inline-block;
+    }
+
+    /* ── ADD CARD (edit mode only) ── */
+    .add-card {
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 32px 16px;
+      cursor: pointer;
+      color: var(--muted);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      min-height: 140px;
+    }
+
+    body.edit-mode .add-card {
+      display: flex;
+    }
+
+    .web .add-card:hover {
+      border-color: var(--web-accent);
+      color: var(--web-accent);
+    }
+
+    .wp .add-card:hover {
+      border-color: var(--wp-accent);
+      color: var(--wp-accent);
+    }
+
+    .ui .add-card:hover {
+      border-color: var(--ui-accent);
+      color: var(--ui-accent);
+    }
+
+    /* ── EMPTY STATE (non-edit, no projects) ── */
+    .empty-state {
+      padding: 40px 0;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      opacity: 0.5;
+      display: none;
+    }
+
+    /* ── MODALS ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 9, 15, 0.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    [data-theme="light"] .modal-overlay {
+      background: rgba(245, 242, 236, 0.7);
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-radius: 4px;
+      padding: 32px;
+      width: min(460px, 90vw);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transform: translateY(8px);
+      transition: transform 0.2s;
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+
+    .modal-title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    .modal label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .modal input,
+    .modal textarea {
+      width: 100%;
+      background: var(--faint);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 300;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+    }
+
+    .modal input:focus,
+    .modal textarea:focus {
+      border-color: var(--border-hover);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    .btn-primary {
+      color: var(--bg);
+      background: var(--text);
+      border-color: var(--text);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    /* ── PIN MODAL ── */
+    .pin-dots {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 8px 0;
+    }
+
+    .pin-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid var(--border-hover);
+      background: transparent;
+      transition: background 0.15s;
+    }
+
+    .pin-dot.filled {
+      background: var(--web-accent);
+      border-color: var(--web-accent);
+    }
+
+    .pin-error {
+      font-size: 11px;
+      color: var(--ui-accent);
+      text-align: center;
+      min-height: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .pin-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .pin-key {
+      background: var(--faint);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 16px;
+      font-weight: 300;
+      padding: 14px 0;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+
+    .pin-key:hover {
+      border-color: var(--border-hover);
+      background: var(--surface);
+    }
+
+    .pin-key:active {
+      transform: scale(0.95);
+    }
+
+    .pin-key.wide {
+      grid-column: span 2;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-name {
+      /* font-family: 'Cormorant Garamond', serif; */
+      font-size: 14px;
+      /* font-style: italic;  */
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .footer-name:hover {
+      color: var(--text);
+    }
+
+    .footer-note {
+      font-size: 10px;
+      color: var(--muted);
+      opacity: 0.45;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+
+      header,
+      main {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      header {
+        padding-top: 56px;
+        padding-bottom: 40px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        padding: 12px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sticky section nav (appears on scroll) -->
+  <nav class="sticky-nav" id="sticky-nav">
+    <a href="#web-apps" class="web" data-section="web-apps">Web Apps</a>
+    <a href="#wordpress" class="wp" data-section="wordpress">WordPress</a>
+    <a href="#ui-ux" class="ui" data-section="ui-ux">UI / UX</a>
+  </nav>
+
+  <!-- Top bar: theme toggle + edit badge -->
+  <div class="topbar">
+    <span class="edit-badge" id="edit-badge">✦ Edit Mode</span>
+    <button class="exit-edit" id="exit-edit" onclick="deactivateEditMode()">Exit ✕</button>
+  </div>
+
+  <header>
+    <nav class="main-nav">
+      <p class="intro">// Hi, I'm Jack Osei</p>
+      <div class="nav-buttons">
+        <button class="btn btn-primary" onclick="openModal('contact-modal')">Hire me!</button>
+        <button class="theme-toggle" id="theme-btn" title="Toggle light/dark" onclick="toggleTheme()">
+          ☀
+        </button>
+      </div>
+    </nav>
+    <h1>Welcome to my <br /><em>Creative</em> Portfolio</h1>
+    <p class="bio" id="bio-text">
+      A collection of recent projects spanning web development, WordPress
+      builds, and interface design.
+    </p>
+    <nav class="nav-pills">
+      <a href="#web-apps" class="web">Web Apps</a>
+      <a href="#wordpress" class="wp">WordPress</a>
+      <a href="#ui-ux" class="ui">UI / UX</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section web" id="web-apps">
+      <div class="section-header">
+        <span class="section-label">01</span>
+        <h2 class="section-title">Web App Projects</h2>
+        <span class="section-count" id="web-count"></span>
+      </div>
+      <div class="grid" id="web-grid">
+        <p class="empty-state" id="web-empty">No projects yet.</p>
+        <button class="add-card" onclick="openModal('web')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add project
+        </button>
+      </div>
+    </section>
+
+    <section class="section wp" id="wordpress">
+      <div class="section-header">
+        <span class="section-label">02</span>
+        <h2 class="section-title">WordPress Projects</h2>
+        <span class="section-count" id="wp-count"></span>
+      </div>
+      <div class="grid" id="wp-grid">
+        <p class="empty-state" id="wp-empty">No projects yet.</p>
+        <button class="add-card" onclick="openModal('wp')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add project
+        </button>
+      </div>
+    </section>
+
+    <section class="section ui" id="ui-ux">
+      <div class="section-header">
+        <span class="section-label">03</span>
+        <h2 class="section-title">UI / UX Design Projects</h2>
+        <span class="section-count" id="ui-count"></span>
+      </div>
+      <div class="grid" id="ui-grid">
+        <p class="empty-state" id="ui-empty">No projects yet.</p>
+        <button class="add-card" onclick="openModal('ui')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add project
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-name" id="footer-name">Jack K. Osei</span>
+    <span class="footer-note" id="footer-note">Click any card to visit the project</span>
+  </footer>
+
+  <!-- Add / Edit Project Modal -->
+  <div class="modal-overlay" id="modal" onclick="handleOverlayClick(event, 'modal')">
+    <div class="modal">
+      <h3 class="modal-title" id="modal-title">Add Project</h3>
+      <div>
+        <label>Project Name</label>
+        <input type="text" id="m-name" placeholder="My Awesome Project" />
+      </div>
+      <div>
+        <label>URL</label>
+        <input type="url" id="m-url" placeholder="https://myproject.com" />
+      </div>
+      <div>
+        <label>Short Description
+          <span style="opacity: 0.4">(optional)</span></label>
+        <textarea id="m-desc" rows="2" placeholder="A brief description of what this project does…"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveProject()">Add →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Modal -->
+  <div class="modal-overlay" id="contact-modal" onclick="handleOverlayClick(event, 'contact-modal')">
+    <div class="modal" style="max-width: 380px">
+      <h3 class="modal-title">Get in Touch</h3>
+      <div class="contact-options">
+        <button class="contact-option" onclick="copyEmail()">
+          <span class="contact-icon">✉</span>
+          <div>
+            <p class="contact-label">Email</p>
+            <p class="contact-value">jackoseik@gmail.com</p>
+          </div>
+          <span class="contact-hint" id="copy-hint">Click to copy</span>
+        </button>
+        <a class="contact-option" href="https://wa.me/233559109933" target="_blank" rel="noopener">
+          <span class="contact-icon">💬</span>
+          <div>
+            <p class="contact-label">WhatsApp</p>
+            <p class="contact-value">+233 55 910 9933</p>
+          </div>
+          <span class="contact-hint">Open →</span>
+        </a>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('contact-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIN Modal -->
+  <div class="modal-overlay" id="pin-modal" onclick="handleOverlayClick(event, 'pin-modal')">
+    <div class="modal" style="max-width: 300px; gap: 16px">
+      <h3 class="modal-title">Enter PIN</h3>
+      <div class="pin-dots" id="pin-dots">
+        <span class="pin-dot" id="d0"></span>
+        <span class="pin-dot" id="d1"></span>
+        <span class="pin-dot" id="d2"></span>
+        <span class="pin-dot" id="d3"></span>
+        <span class="pin-dot" id="d4"></span>
+        <span class="pin-dot" id="d5"></span>
+      </div>
+      <p class="pin-error" id="pin-error"></p>
+      <div class="pin-keypad">
+        <button class="pin-key" onclick="pinKey('1')">1</button>
+        <button class="pin-key" onclick="pinKey('2')">2</button>
+        <button class="pin-key" onclick="pinKey('3')">3</button>
+        <button class="pin-key" onclick="pinKey('4')">4</button>
+        <button class="pin-key" onclick="pinKey('5')">5</button>
+        <button class="pin-key" onclick="pinKey('6')">6</button>
+        <button class="pin-key" onclick="pinKey('7')">7</button>
+        <button class="pin-key" onclick="pinKey('8')">8</button>
+        <button class="pin-key" onclick="pinKey('9')">9</button>
+        <button class="pin-key" onclick="pinKey('back')" style="font-size: 12px; letter-spacing: 0.05em">
+          ⌫
+        </button>
+        <button class="pin-key" onclick="pinKey('0')">0</button>
+        <button class="pin-key" onclick="closeModal('pin-modal')" style="font-size: 11px; letter-spacing: 0.1em">
+          ESC
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─────────────────────────────────────────────────────────────────────────
+    // Supabase config — replace with your project values.
+    // Find these in: Supabase dashboard → Project Settings → API
+    // Supabase anon key — safe to expose in client code (designed for public use).
+    // Writes are allowed via RLS policies granted to the anon role.
+    const SUPABASE_URL = "https://REDACTED.supabase.co";
+    const SUPABASE_ANON_KEY = "REDACTED";
+
+    // SHA-256 hash of your 6-digit PIN. To change your PIN:
+    //   echo -n "YOURPIN" | sha256sum   (Mac/Linux)
+    const EDIT_PIN_HASH =
+      "REDACTED";
+
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let editMode = false;
+    let pinBuffer = "";
+
+    let data = {
+      bio: "",
+      web: [],
+      wp: [],
+      ui: [],
+    };
+
+    /* ── PERSISTENCE ── */
+    async function load() {
+      const [{ data: projects }, { data: settings }] = await Promise.all([
+        db
+          .from("projects")
+          .select("*")
+          .order("sort_order", { ascending: true, nullsFirst: false })
+          .order("id"),
+        db.from("settings").select("*"),
+      ]);
+      if (projects) {
+        data.web = projects.filter((p) => p.category === "web").map(toProject);
+        data.wp  = projects.filter((p) => p.category === "wp").map(toProject);
+        data.ui  = projects.filter((p) => p.category === "ui").map(toProject);
+      }
+      if (settings) {
+        const bio = settings.find((s) => s.key === "bio");
+        if (bio) data.bio = bio.value;
+      }
+    }
+
+    function toProject(row) {
+      return {
+        id: row.id,
+        name: row.name,
+        url: row.url,
+        desc: row.description,
+        sort_order: row.sort_order,
+      };
+    }
+
+    /* ── THEME ── */
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.getAttribute("data-theme") === "dark";
+      html.setAttribute("data-theme", isDark ? "light" : "dark");
+      document.getElementById("theme-btn").textContent = isDark ? "☾" : "☀";
+      try {
+        localStorage.setItem("portfolio_theme", isDark ? "light" : "dark");
+      } catch (e) { }
+    }
+    function loadTheme() {
+      try {
+        const t = localStorage.getItem("portfolio_theme");
+        if (t) {
+          document.documentElement.setAttribute("data-theme", t);
+          document.getElementById("theme-btn").textContent =
+            t === "light" ? "☾" : "☀";
+        }
+      } catch (e) { }
+    }
+
+    /* ── EDIT MODE ── */
+    function activateEditMode() {
+      editMode = true;
+      document.body.classList.add("edit-mode");
+      document.getElementById("edit-badge").classList.add("visible");
+      document.getElementById("footer-note").textContent =
+        "Edit mode · Drag to reorder · ✎ edit · ✕ remove";
+      document.getElementById("bio-text").title = "Click to edit bio";
+      render();
+    }
+
+    function deactivateEditMode() {
+      editMode = false;
+      document.body.classList.remove("edit-mode");
+      document.getElementById("edit-badge").classList.remove("visible");
+      document.getElementById("footer-note").textContent =
+        "Click any card to visit the project";
+      document.getElementById("bio-text").removeAttribute("title");
+      render();
+    }
+
+    /* ── URL FLAG CHECK ── */
+    function checkUrlFlag() {
+      if (new URLSearchParams(window.location.search).has("edit")) {
+        openModal("pin-modal-show");
+      }
+    }
+
+    /* ── PIN LOGIC ── */
+    function openPinModal() {
+      pinBuffer = "";
+      updatePinDots();
+      document.getElementById("pin-error").textContent = "";
+      document.getElementById("pin-modal").classList.add("open");
+    }
+
+    function pinKey(k) {
+      if (k === "back") {
+        pinBuffer = pinBuffer.slice(0, -1);
+        updatePinDots();
+        return;
+      }
+      if (pinBuffer.length >= 6) return;
+      pinBuffer += k;
+      updatePinDots();
+      if (pinBuffer.length === 6) setTimeout(checkPin, 120);
+    }
+
+    function updatePinDots() {
+      for (let i = 0; i < 6; i++) {
+        document
+          .getElementById("d" + i)
+          .classList.toggle("filled", i < pinBuffer.length);
+      }
+    }
+
+    async function checkPin() {
+      const msgBuffer = new TextEncoder().encode(pinBuffer);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+      const hashHex = Array.from(new Uint8Array(hashBuffer))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+      if (hashHex === EDIT_PIN_HASH) {
+        closeModal("pin-modal");
+        activateEditMode();
+      } else {
+        document.getElementById("pin-error").textContent = "Incorrect PIN";
+        pinBuffer = "";
+        updatePinDots();
+        setTimeout(() => {
+          document.getElementById("pin-error").textContent = "";
+        }, 1500);
+      }
+    }
+
+    /* ── MODALS ── */
+    let activeCategory = null;
+    let editingId = null;
+
+    const ADD_TITLES = {
+      web: "Add Web App Project",
+      wp: "Add WordPress Project",
+      ui: "Add UI / UX Project",
+    };
+    const EDIT_TITLES = {
+      web: "Edit Web App Project",
+      wp: "Edit WordPress Project",
+      ui: "Edit UI / UX Project",
+    };
+
+    function openModal(catOrId) {
+      if (catOrId === "pin-modal-show" || catOrId === "pin-modal") {
+        openPinModal();
+        return;
+      }
+      if (catOrId === "contact-modal") {
+        document.getElementById("contact-modal").classList.add("open");
+        return;
+      }
+      activeCategory = catOrId;
+      editingId = null;
+      document.getElementById("modal-title").textContent = ADD_TITLES[catOrId];
+      document.querySelector("#modal .btn-primary").textContent = "Add →";
+      document.getElementById("m-name").value = "";
+      document.getElementById("m-url").value = "";
+      document.getElementById("m-desc").value = "";
+      ["m-name", "m-url"].forEach(
+        (id) => (document.getElementById(id).style.borderColor = ""),
+      );
+      document.getElementById("modal").classList.add("open");
+      setTimeout(() => document.getElementById("m-name").focus(), 100);
+    }
+
+    function openEditModal(cat, id) {
+      const project = data[cat].find((p) => p.id === id);
+      if (!project) return;
+      activeCategory = cat;
+      editingId = id;
+      document.getElementById("modal-title").textContent = EDIT_TITLES[cat];
+      document.querySelector("#modal .btn-primary").textContent = "Save →";
+      document.getElementById("m-name").value = project.name;
+      document.getElementById("m-url").value = project.url;
+      document.getElementById("m-desc").value = project.desc || "";
+      ["m-name", "m-url"].forEach(
+        (id) => (document.getElementById(id).style.borderColor = ""),
+      );
+      document.getElementById("modal").classList.add("open");
+      setTimeout(() => document.getElementById("m-name").focus(), 100);
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("open");
+      if (id === "modal") {
+        activeCategory = null;
+        editingId = null;
+      }
+      if (id === "pin-modal") {
+        const url = new URL(window.location);
+        url.searchParams.delete("edit");
+        history.replaceState({}, "", url);
+      }
+    }
+
+    function handleOverlayClick(e, id) {
+      if (e.target === document.getElementById(id)) closeModal(id);
+    }
+
+    async function saveProject() {
+      const name = document.getElementById("m-name").value.trim();
+      const url = document.getElementById("m-url").value.trim();
+      const desc = document.getElementById("m-desc").value.trim();
+      document.getElementById("m-name").style.borderColor = !name
+        ? "var(--ui-accent)"
+        : "";
+      document.getElementById("m-url").style.borderColor = !url
+        ? "var(--ui-accent)"
+        : "";
+      if (!name || !url) return;
+
+      const saveBtn = document.querySelector('#modal .btn-primary');
+      const restoreLabel = editingId ? "Save →" : "Add →";
+      saveBtn.textContent = "Saving…";
+      saveBtn.disabled = true;
+
+      let error;
+      if (editingId) {
+        const cat = activeCategory;
+        const id = editingId;
+        const res = await db
+          .from("projects")
+          .update({ name, url, description: desc })
+          .eq("id", id)
+          .select()
+          .single();
+        error = res.error;
+        if (!error) {
+          const idx = data[cat].findIndex((p) => p.id === id);
+          if (idx !== -1) data[cat][idx] = toProject(res.data);
+        }
+      } else {
+        const cat = activeCategory;
+        const res = await db
+          .from("projects")
+          .insert({
+            category: cat,
+            name,
+            url,
+            description: desc,
+            sort_order: data[cat].length,
+          })
+          .select()
+          .single();
+        error = res.error;
+        if (!error) data[cat].push(toProject(res.data));
+      }
+
+      saveBtn.textContent = restoreLabel;
+      saveBtn.disabled = false;
+
+      if (error) { alert("Failed to save: " + error.message); return; }
+
+      render();
+      closeModal("modal");
+    }
+
+    async function deleteProject(cat, id) {
+      const { error } = await db.from("projects").delete().eq("id", id);
+      if (error) { alert("Failed to delete: " + error.message); return; }
+      data[cat] = data[cat].filter((p) => p.id !== id);
+      render();
+    }
+
+    function copyEmail() {
+      navigator.clipboard.writeText("jackoseik@gmail.com").then(() => {
+        const hint = document.getElementById("copy-hint");
+        hint.textContent = "Copied!";
+        hint.style.color = "var(--web-accent)";
+        setTimeout(() => {
+          hint.textContent = "Click to copy";
+          hint.style.color = "";
+        }, 2000);
+      });
+    }
+
+    /* ── KEYBOARD ── */
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        ["modal", "pin-modal", "contact-modal"].forEach((id) => {
+          if (document.getElementById(id).classList.contains("open"))
+            closeModal(id);
+        });
+      }
+      if (
+        e.key === "Enter" &&
+        document.getElementById("modal").classList.contains("open")
+      ) {
+        if (document.activeElement.tagName !== "TEXTAREA") saveProject();
+      }
+      if (document.getElementById("pin-modal").classList.contains("open")) {
+        if (/^[0-9]$/.test(e.key)) pinKey(e.key);
+        if (e.key === "Backspace") pinKey("back");
+      }
+    });
+
+    /* ── THUMBNAIL ── */
+    const SCREENSHOT_KEY = "REDACTED";
+    function thumbUrl(url) {
+      return (
+        "https://api.screenshotone.com/take?access_key=" + SCREENSHOT_KEY +
+        "&url=" + encodeURIComponent(url) +
+        "&viewport_width=1280&viewport_height=800&format=webp&image_quality=80" +
+        "&cache=true&full_page=false&block_ads=true"
+      );
+    }
+    function cleanUrl(url) {
+      return url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+    }
+
+    /* ── RENDER ── */
+    function renderSection(cat) {
+      const grid = document.getElementById(cat + "-grid");
+      const projects = data[cat];
+      const count = document.getElementById(cat + "-count");
+
+      count.textContent =
+        projects.length === 0
+          ? ""
+          : projects.length === 1
+            ? "1 project"
+            : projects.length + " projects";
+
+      const cards = projects
+        .map(
+          (p) => `
+      <a class="card" href="${safeUrl(p.url)}" target="_blank" rel="noopener"${editMode ? ` draggable="true" data-id="${p.id}" data-cat="${cat}"` : ""}>
+        ${editMode ? `<button class="card-edit" onclick="event.preventDefault();event.stopPropagation();openEditModal('${cat}',${p.id})" title="Edit">✎</button>` : ""}
+        ${editMode ? `<button class="card-delete" onclick="event.preventDefault();deleteProject('${cat}',${p.id})" title="Remove">✕</button>` : ""}
+        <div class="card-thumb">
+          <div class="thumb-placeholder" id="ph-${p.id}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            <span id="ph-txt-${p.id}">Loading preview…</span>
+          </div>
+          <img src="${thumbUrl(p.url)}" alt="${esc(p.name)} preview"
+            onload="this.classList.add('loaded');var ph=document.getElementById('ph-${p.id}');if(ph)ph.style.display='none';"
+            onerror="this.style.display='none';var t=document.getElementById('ph-txt-${p.id}');if(t)t.textContent='No preview';"/>
+        </div>
+        <div class="card-body">
+          <p class="card-name">${esc(p.name)}</p>
+          ${p.desc ? `<p class="card-desc">${esc(p.desc)}</p>` : ""}
+          <p class="card-url">${cleanUrl(p.url)}</p>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>`,
+        )
+        .join("");
+
+      const addBtn = `
+      <button class="add-card" onclick="openModal('${cat}')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add project
+      </button>`;
+
+      grid.innerHTML =
+        `<p class="empty-state" id="${cat}-empty" style="display:${!editMode && projects.length === 0 ? "block" : "none"}">No projects yet.</p>` +
+        cards +
+        addBtn;
+
+      if (editMode) enableDrag(cat);
+    }
+
+    /* ── DRAG TO REORDER (edit mode only) ── */
+    let dragId = null;
+    let dragCat = null;
+
+    function enableDrag(cat) {
+      const grid = document.getElementById(cat + "-grid");
+      grid.querySelectorAll(".card[draggable='true']").forEach((card) => {
+        card.addEventListener("dragstart", (e) => {
+          dragId = Number(card.dataset.id);
+          dragCat = card.dataset.cat;
+          card.classList.add("dragging");
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", String(dragId));
+        });
+
+        card.addEventListener("dragend", () => {
+          card.classList.remove("dragging");
+          grid.querySelectorAll(".drag-over").forEach((c) =>
+            c.classList.remove("drag-over"),
+          );
+          dragId = null;
+          dragCat = null;
+        });
+
+        card.addEventListener("dragover", (e) => {
+          if (dragId === null || dragCat !== cat) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          if (Number(card.dataset.id) !== dragId) card.classList.add("drag-over");
+        });
+
+        card.addEventListener("dragleave", () => {
+          card.classList.remove("drag-over");
+        });
+
+        card.addEventListener("drop", (e) => {
+          e.preventDefault();
+          card.classList.remove("drag-over");
+          const targetId = Number(card.dataset.id);
+          if (dragId === null || dragCat !== cat || targetId === dragId) return;
+          const rect = card.getBoundingClientRect();
+          const insertAfter =
+            e.clientY > rect.bottom
+              ? true
+              : e.clientY < rect.top
+                ? false
+                : e.clientX > rect.left + rect.width / 2;
+          reorder(cat, dragId, targetId, insertAfter);
+        });
+      });
+    }
+
+    function reorder(cat, fromId, targetId, insertAfter) {
+      const list = data[cat];
+      const from = list.findIndex((p) => p.id === fromId);
+      let to = list.findIndex((p) => p.id === targetId);
+      if (from === -1 || to === -1) return;
+      if (insertAfter) to++;
+      const [moved] = list.splice(from, 1);
+      if (from < to) to--;
+      list.splice(Math.max(0, to), 0, moved);
+      list.forEach((p, i) => (p.sort_order = i));
+      render();
+      persistOrder(cat);
+    }
+
+    async function persistOrder(cat) {
+      const results = await Promise.all(
+        data[cat].map((p, i) =>
+          db.from("projects").update({ sort_order: i }).eq("id", p.id),
+        ),
+      );
+      const failed = results.find((r) => r.error);
+      if (failed) alert("Failed to save order: " + failed.error.message);
+    }
+
+    function render() {
+      renderSection("web");
+      renderSection("wp");
+      renderSection("ui");
+      document.getElementById("bio-text").textContent = data.bio;
+    }
+
+    function safeUrl(url) {
+      return /^https?:\/\//i.test(String(url)) ? esc(url) : "#";
+    }
+
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    /* ── BIO EDIT (edit mode only) ── */
+    document
+      .getElementById("bio-text")
+      .addEventListener("click", async function () {
+        if (!editMode) return;
+        const b = prompt("Edit bio:", data.bio);
+        if (b !== null && b.trim()) {
+          const { error } = await db
+            .from("settings")
+            .upsert({ key: "bio", value: b.trim() });
+          if (error) { alert("Failed to save bio: " + error.message); return; }
+          data.bio = b.trim();
+          render();
+        }
+      });
+
+    /* ── FOOTER NAME EDIT (edit mode only) ── */
+    document
+      .getElementById("footer-name")
+      .addEventListener("dblclick", function () {
+        if (!editMode) return;
+        const n = prompt("Edit displayed name:", this.textContent);
+        if (n && n.trim()) {
+          this.textContent = n.trim();
+        }
+      });
+
+    /* ── STICKY NAV + SECTION HIGHLIGHT ── */
+    function initNav() {
+      const stickyNav = document.getElementById("sticky-nav");
+      const stickyLinks = stickyNav.querySelectorAll("a");
+      const headerPills = document.querySelectorAll(".nav-pills a");
+      const sectionIds = ["web-apps", "wordpress", "ui-ux"];
+
+      function setActive(id) {
+        stickyLinks.forEach(a => a.classList.toggle("active", a.dataset.section === id));
+        headerPills.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + id));
+      }
+
+      new IntersectionObserver(([e]) => {
+        stickyNav.classList.toggle("visible", !e.isIntersecting);
+      }).observe(document.querySelector(".nav-pills"));
+
+      const sectionObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
+      }, { rootMargin: "-30% 0px -60% 0px" });
+
+      sectionIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) sectionObs.observe(el);
+      });
+    }
+
+    /* ── INIT ── */
+    async function init() {
+      loadTheme();
+      await load();
+      render();
+      checkUrlFlag();
+      initNav();
+    }
+    init();
+  </script>
+</body>
+
+</html>
