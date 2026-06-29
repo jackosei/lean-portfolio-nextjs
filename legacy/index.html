@@ -1132,13 +1132,12 @@
     // Find these in: Supabase dashboard → Project Settings → API
     // Supabase anon key — safe to expose in client code (designed for public use).
     // Writes are allowed via RLS policies granted to the anon role.
-    const SUPABASE_URL = "https://REDACTED.supabase.co";
+    const SUPABASE_URL = "REDACTED";
     const SUPABASE_ANON_KEY = "REDACTED";
 
     // SHA-256 hash of your 6-digit PIN. To change your PIN:
     //   echo -n "YOURPIN" | sha256sum   (Mac/Linux)
-    const EDIT_PIN_HASH =
-      "REDACTED";
+    const EDIT_PIN_HASH = "REDACTED";
 
     const { createClient } = supabase;
     const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

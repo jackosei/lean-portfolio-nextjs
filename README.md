@@ -56,7 +56,7 @@ Fill in `.env.local`:
 | `DATABASE_URL` | Neon pooled connection string |
 | `AUTH_SECRET` | `openssl rand -hex 32` |
 | `EDIT_PIN_HASH` | `npm run pin:hash -- <your-6-digit-pin>` |
-| `SCREENSHOTONE_ACCESS_KEY` | optional — your screenshotone key (falls back to the original) |
+| `SCREENSHOTONE_ACCESS_KEY` | your screenshotone key (required for preview thumbnails) |
 
 ### 4. Create the tables
 
@@ -73,8 +73,8 @@ Supabase project is **resumed** first, then run:
 npm run db:migrate-supabase
 ```
 
-The script defaults to the Supabase URL/anon key from the original `index.html`.
-Override them via `SUPABASE_URL` / `SUPABASE_ANON_KEY` in `.env.local` if needed.
+Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` in `.env.local` first (the script
+reads them from the environment — no credentials are stored in the code).
 
 ### 6. Run
 

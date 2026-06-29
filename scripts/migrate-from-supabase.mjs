@@ -3,17 +3,20 @@ import { loadEnv } from "./_env.mjs";
 
 loadEnv();
 
-// These default to the values that were embedded in the original index.html.
-// Override them in .env.local if your Supabase project differs.
-const SUPABASE_URL =
-  process.env.SUPABASE_URL || "https://REDACTED.supabase.co";
-const SUPABASE_ANON_KEY =
-  process.env.SUPABASE_ANON_KEY ||
-  "REDACTED";
+// Source Supabase credentials come from the environment (.env.local) — never
+// hardcoded. Set SUPABASE_URL and SUPABASE_ANON_KEY before running.
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
   console.error("✗ DATABASE_URL is not set. Run `npm run db:setup` first.");
+  process.exit(1);
+}
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error(
+    "✗ SUPABASE_URL and SUPABASE_ANON_KEY must be set in .env.local to migrate.",
+  );
   process.exit(1);
 }
 
